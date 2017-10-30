@@ -1,2 +1,3 @@
 # genesis
-simulation as proof that god exists
+
+a neural network driven simulation of simple organisms
