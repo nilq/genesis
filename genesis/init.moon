@@ -1,12 +1,23 @@
-scene = {
-  
-}
+scene = {}
 
-scene.load = => {}
+agent = require "genesis/agent"
+
+scene.load = =>
+  math.randomseed os.time!
+  @agents = {}
   
-scene.update = (dt) => {}
+  for _ = 1, 100
+    @spawn!
   
+scene.spawn = =>
+  @agents[#@agents + 1] = agent.agent!
+
+scene.update = (dt) =>
+  for agent in *@agents
+    agent\update dt if agent.update
+
 scene.draw = =>
-  love.graphics.rectangle "fill", 100, 100, 100, 100
+  for agent in *@agents
+    agent\draw! if agent.draw
 
 scene

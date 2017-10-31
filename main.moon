@@ -1,4 +1,7 @@
 export state = require "state"
+export util  = require "util"
+
+love.graphics.setBackgroundColor 255, 255, 255
 
 love.load = ->
   state\set "genesis"
