@@ -15,3 +15,6 @@ love.draw = ->
 
 love.keypressed = (key, isrepeat) ->
   state\press key, isrepeat if state.press
+
+love.mousepressed = (x, y) ->
+  state\click x, y if state.click

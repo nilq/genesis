@@ -14,7 +14,7 @@ hull.make = (x, y) ->
       math.random 0, 255
       math.random 0, 255
     }
-    
+
   hull.update = (dt) =>
     for appendage in *@appendages
       appendage\update dt if appendage.update

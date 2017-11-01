@@ -26,11 +26,28 @@ neuron.make = ->
       .id[i] = util.randi 0, brain_size
       .id[i] = util.randi 1, inputs if 0.2 > util.randi 1, inputs
 
-      .notted[i] = 0 == util.randi 0, 1
+      .notted[i] = 0 > math.random -1, 2
 
     .bias   = util.randf -1, 1
     .target = 0
     .out    = 0
+  
+  box.pos = (i) =>
+    if i <= inputs
+      return 10, i * 10
+      
+    if i >= brain_size - outputs
+      return 390, 10 + (brain_size - i) * 10
+      
+    a = 100
+    b = 1
+    c = 2.5
+
+    if i < brain_size / 2 + inputs
+      200 + (a * math.cos i * b), 100 + (a * math.sin i * b)
+    else
+      201 + (a / c * math.cos i * b), 100 + (a / c * math.sin i * b)
+
 
   box
 
@@ -59,6 +76,31 @@ dwraonn.make = ->
         a.id[j] = 4  if 0.05 > util.randf 0, 1
 
         a.id[j] = util.randi 1, inputs if i < brain_size / 2
+
+    .draw = =>
+      with love.graphics
+        for i = 0, brain_size
+          n = @neurons[i]
+          for c = 0, connections
+            i2 = n.id[c]
+
+            x, y   = n\pos i
+            x2, y2 = n\pos i2
+            
+            no = 0
+            no = 200 if n.notted[c]
+            
+            .setColor n.w[c] * 255 + no, n.w[c] * 255, n.w[c] * 255
+            .line x, y, x2, y2
+        
+        for i = 1, brain_size
+          x, y = @neurons[i]\pos i
+          
+          .setColor @neurons[i].out * 255, @neurons[i].out * 255, @neurons[i].out * 255
+          .rectangle "fill", x, y, 4, 4
+          
+          .setColor 0, 0, 0
+          .rectangle "line", x, y, 4, 4
 
     .tick = (input, output) =>
       for i = 0, inputs
