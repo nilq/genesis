@@ -26,15 +26,26 @@ agent = ->
     .inp = {}
     for i = 0, brain.settings.inputs
       .inp[i] = 0
+      
+  agent.think = (scene) =>
+    cx = math.floor @hull.pos.x / (love.graphics.getWidth!  / #scene.food)
+    cy = math.floor @hull.pos.y / (love.graphics.getHeight! / #scene.food[0])
 
-  agent.update = (dt) =>
-    @hull\update dt
-
-    -- higher
+    @inp[9] = scene.food[cx][cy] / 0.5
+    
     @brain\tick @inp, @out
-
+    
     @wheel_l = @out[1]
     @wheel_r = @out[2]
+    
+    @hull.color[1] = @out[3] * 255
+    @hull.color[2] = @out[4] * 255
+    @hull.color[2] = @out[5] * 255
+
+  agent.update = (dt, scene) =>
+    @hull\update dt
+
+    @think scene
 
     -- movement
     whp1 = { -- wheel position

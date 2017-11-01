@@ -33,20 +33,22 @@ neuron.make = ->
     .out    = 0
   
   box.pos = (i) =>
+    off_y = 10
+
     if i <= inputs
-      return 10, i * 10
+      return 10, i * 10 + off_y
       
     if i >= brain_size - outputs
-      return 390, 10 + (brain_size - i) * 10
+      return 390, 10 + (brain_size - i) * 10 + off_y
       
     a = 100
     b = 1
     c = 2.5
 
     if i < brain_size / 2 + inputs
-      200 + (a * math.cos i * b), 100 + (a * math.sin i * b)
+      200 + (a * math.cos i * b), 100 + (a * math.sin i * b) + off_y
     else
-      201 + (a / c * math.cos i * b), 100 + (a / c * math.sin i * b)
+      201 + (a / c * math.cos i * b), 100 + (a / c * math.sin i * b) + off_y
 
 
   box
