@@ -27,7 +27,7 @@ hull.make = (x, y) ->
 
     @pos.x %= love.graphics.getWidth!
     @pos.y %= love.graphics.getHeight!
-    
+
   hull.draw = =>
     with love.graphics
       for appendage in *@appendages

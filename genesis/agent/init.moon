@@ -9,11 +9,14 @@ boost_speed = 2
 rep_rate = (herb, c=2, h=2) ->
   herb * (util.randf c - 0.1, h + 0.1) + (1 - herb) * util.randf c - 0.1, h + 0.1
 
-make_agent = ->
+make_agent = (pos) ->
   agent = {}
 
   x = math.random 0, love.graphics.getWidth!
   y = math.random 0, love.graphics.getHeight!
+  
+  x = pos.x if pos
+  y = pos.y if pos
 
   with agent
     .hull  = hull.make x, y

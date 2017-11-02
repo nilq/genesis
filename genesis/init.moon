@@ -59,18 +59,21 @@ scene.update = (dt) =>
         break
       else
         @focused = nil
-        
-  if love.mouse.isDown 2
-    if @focused
-      x = love.mouse.getX!
-      y = love.mouse.getY!
+    
+    unless @focused
+      @food[math.floor x / 32][math.floor y / 32] += 0.02
 
+  if love.mouse.isDown 2
+    x = love.mouse.getX!
+    y = love.mouse.getY!
+    if @focused
       for a in *@agents
         if (util.distance {x, y}, {a.hull.pos.x, a.hull.pos.y}) < a.hull.radius
-          b = @focused\crossover_baby a, {:x, :y}
-          @put b
+          @put @focused\crossover_baby a, {:x, :y}
           @focused = nil
-          return
+          break
+    else
+      @food[math.floor x / 32][math.floor y / 32] -= 0.05
         
   for agent in *@agents
     agent\update dt, @ if agent.update
@@ -125,7 +128,7 @@ scene.draw = =>
   
   for agent in *@agents
     agent\draw! if agent.draw
-      
+
     if @focused
       if agent.tag == @focused.tag
         with love.graphics
@@ -142,11 +145,11 @@ scene.draw = =>
 scene.press = (key) =>
   if key == "space"
     for _ = 1, 1
-      @spawn!
+      @put agent.make_agent {x: love.mouse.getX!, y: love.mouse.getY!}
       
   if key == "return"
     for _ = 1, 25
-      @spawn!
+      @put agent.make_agent {x: love.mouse.getX!, y: love.mouse.getY!}
       
   if key == "tab"
     for _ = 0, 1000
