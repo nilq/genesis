@@ -7,7 +7,12 @@ outputs     = 9
 -- neuron representation
 neuron      = {}
 neuron.make = ->
-  box = {}
+  box = {
+    brain_size: 90
+    connections: 3
+    inputs: 20
+    outputs: 9
+  }
 
   with box
     .type = 0
@@ -35,29 +40,28 @@ neuron.make = ->
   box.pos = (i) =>
     off_y = 10
 
-    if i <= inputs
+    if i <= @inputs
       return 10, i * 10 + off_y
       
-    if i >= brain_size - outputs
-      return 390, 10 + (brain_size - i) * 10 + off_y
+    if i >= @brain_size - @outputs
+      return 390, 10 + (@brain_size - i) * 10 + off_y
       
     a = 100
     b = 1
     c = 2.5
 
-    if i < brain_size / 2 + inputs
+    if i < @brain_size / 2 + @inputs
       200 + (a * math.cos i * b), 100 + (a * math.sin i * b) + off_y
     else
       201 + (a / c * math.cos i * b), 100 + (a / c * math.sin i * b) + off_y
-
 
   box
 
 -- damp weighted recurrent and/or neural network
 dwraonn      = {}
-dwraonn.from = (other) ->
+dwraonn.from = (b) ->
   brain = dwraonn.make!
-  brain.neurons = table.deepcopy other.neurons
+  brain.neurons = table.deepcopy b.neurons
   brain
 
 dwraonn.make = ->
@@ -81,8 +85,15 @@ dwraonn.make = ->
 
     .draw = =>
       with love.graphics
+        .push!
+        .scale 1.75, 1.75
+  
+        .setColor 100, 100, 100, 50
+        .rectangle "fill", 5, 10, 395, 210
+
         for i = 0, brain_size
-          n = @neurons[i]
+          n   = @neurons[i]
+
           for c = 0, connections
             i2 = n.id[c]
 
@@ -91,8 +102,9 @@ dwraonn.make = ->
             
             no = 0
             no = 200 if n.notted[c]
-            
+              
             .setColor n.w[c] * 255 + no, n.w[c] * 255, n.w[c] * 255
+            
             .line x, y, x2, y2
         
         for i = 1, brain_size
@@ -103,6 +115,8 @@ dwraonn.make = ->
           
           .setColor 0, 0, 0
           .rectangle "line", x, y, 4, 4
+          
+        .pop!
 
     .tick = (input, output) =>
       for i = 0, inputs
@@ -174,6 +188,29 @@ dwraonn.make = ->
         rc = util.randi 0, connections
 
         @neurons[i].type = 1 - @neurons[i].type
+        
+  brain.crossover = (b) =>
+    brain_new = dwraonn.make!
+
+    for i = 0, #brain_new.neurons
+      brain_new.neurons[i].bias = b.neurons[i].bias
+      brain_new.neurons[i].kp   = b.neurons[i].kp
+      brain_new.neurons[i].type = b.neurons[i].type
+
+      brain_new.neurons[i].bias = @neurons[i].bias if 0.5 > util.randf 0, 1
+      brain_new.neurons[i].kp   = @neurons[i].kp   if 0.5 > util.randf 0, 1
+      brain_new.neurons[i].type = @neurons[i].type if 0.5 > util.randf 0, 1
+
+      for j = 1, #brain_new.neurons[i].id
+        brain_new.neurons[i].id[j]     = b.neurons[i].id[j]
+        brain_new.neurons[i].notted[j] = b.neurons[i].notted[j]
+        brain_new.neurons[i].w[j]      = b.neurons[i].w[j]
+
+        brain_new.neurons[i].id[j]     = @neurons[i].id[j]     if 0.5 > util.randf 0, 1
+        brain_new.neurons[i].notted[j] = @neurons[i].notted[j] if 0.5 > util.randf 0, 1
+        brain_new.neurons[i].w[j]      = @neurons[i].w[j]      if 0.5 > util.randf 0, 1
+
+    brain_new
 
   brain
 

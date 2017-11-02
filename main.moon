@@ -1,6 +1,8 @@
 export state = require "state"
 export util  = require "util"
 
+require "deepcopy"
+
 love.graphics.setBackgroundColor 255, 255, 255
 
 love.load = ->
