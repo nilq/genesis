@@ -10,13 +10,13 @@ scene.load = =>
   @food   = {}
   @count  = 0
   
+  @is_food   = false
+  @is_agents = false
+  
   for x = 0, love.graphics.getWidth! / 32
     a = {}
     for y = 0, love.graphics.getWidth! / 32
-      if 0 == math.random 0, 3
-        a[y] = math.random 0, 0.5
-      else
-        a[y] = 0
+      a[y] = 0
 
     @food[x] = a
 
@@ -29,9 +29,9 @@ scene.put = (b) =>
 scene.update = (dt) =>
   @count += 1
 
-  @spawn! if #@agents < agents_max
+  @spawn! if #@agents < agents_max and @is_agents
 
-  if @count % 200 == 0
+  if @count % 200 == 0 and @is_agents
     if 0.5 > util.randf 0, 1
       @spawn!
     else
@@ -42,7 +42,7 @@ scene.update = (dt) =>
       for y = 0, #@food[0]
         @food[x][y] -= 0.0001
   
-  if @count % 120 == 0
+  if @count % 120 == 0 and @is_food
     for _ = 0, 3
       x = util.randi 0, #@food
       y = util.randi 0, #@food[0]
@@ -134,7 +134,7 @@ scene.draw = =>
         with love.graphics
           .setColor 0, 0, 255, 200
           .rectangle "line", agent.hull.pos.x - agent.hull.radius * 2, agent.hull.pos.y - agent.hull.radius * 2, agent.hull.radius * 4, agent.hull.radius * 4
-
+          
   if @focused
     @focused.brain\draw @focused.hull.pos.x, @focused.hull.pos.y
 
@@ -154,5 +154,39 @@ scene.press = (key) =>
   if key == "tab"
     for _ = 0, 1000
       @update 1
+
+  if key == "delete"
+    i = 0
+    for agent in *@agents
+      continue unless agent
+      i += 1
+      if agent == @focused
+        @focused = nil
+        table.remove @agents, i
+
+  if key == "backspace"
+    if @focused
+      tag = @focused.tag
+      @focused = nil
+      i = 0
+      for agent in *@agents
+        continue unless agent
+        i += 1
+        if agent.tag == tag
+          table.remove @agents, i
+          
+  if key == "1"
+    unless @is_food
+      for x = 0, love.graphics.getWidth! / 32
+        for y = 0, love.graphics.getWidth! / 32
+          if 0 == math.random 0, 3
+            @food[x][y] = math.random 0, 0.5
+          else
+            @food[x][y] = 0
+
+    @is_food = true
+  
+  if key == "2"
+    @is_agents = true
       
 scene

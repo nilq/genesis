@@ -24,6 +24,8 @@ make_agent = (pos) ->
     
     .dead = false
     
+    .radius = .hull.radius
+    
     .tag = (math.random -100, 100) .. math.random -1000, 1000
 
     .wheel_l = 0
@@ -219,10 +221,12 @@ make_agent = (pos) ->
     @think scene
     @hull\update dt
     @eat scene
+    
+    @hull.radius = @radius - @rep_count * 1.25
 
     -- starve
     loss = 0.0002 + 0.0001 * ((math.abs @wheel_r) + (math.abs @wheel_r)) / 2
-    loss = 0.001 if @wheel_l < 0.1 and @wheel_r < 0.1
+    loss = 0.001 if @wheel_l + @wheel_r < 0.1
 
     if @boosting
       @health -= loss * 4
