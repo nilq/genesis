@@ -1,23 +1,34 @@
-# genesis
-a neural network driven simulation of simple organisms
+# Genesis
 
-## docs
+Evolution of organisms powered by DWRAON (damp-weighted recurrent and/or network) brains, inspired by Andrej Karpathy's Script Bots.
 
-in the beginning there is nothing. press 1 to activate the food grid. press 2 to
-activate the agents.
+There is currently no recording of the current version of Genesis. However, the following video shows a previous iteration of this project:
 
-furthermore,
+[![Video of simulation in progress.](https://img.youtube.com/vi/WKC0CCcwC-4/0.jpg)](https://www.youtube.com/watch?v=WKC0CCcwC-4)
 
-press space to spawn an agent at the mouse position.
-press enter to spawn 10 agents at the mouse position.
+## Getting started
 
-press tab to skip 1000 update steps.
+This project runs on [LÖVE 0.10.0 (Super Toast)](https://love2d.org/wiki/0.10.0), and might have problems with colours in later versions.
 
-left-click agents to analyse their brains and race.
-right-click an agent to spawn a crossover baby between the clicked and focused agent.
+Compile the [MoonScript](https://moonscript.org) code to Lua, then use LÖVE to run the simulation:
 
-left-click food grid to grow food.
-right-click food grid to remove food.
 
-press delete to remove focused agent.
-press backspace to remove the focused agent and his whole family tree.
+### Controls
+
+#### Simulation
+
+- Press `<space>` to spawn a randomly initialised organism at the mouse position.
+- Press `<enter>` to spawn 10 random organisms at the mouse position.
+- Press `<tab>` to run 1000 update steps without rendering (slightly faster this way).
+
+#### Organisms 
+
+- Left-click on an organism to select it. This will show a visualisation of the underlying brain and highlight organisms in its family.
+- (with an organism already selected) Right-click on another organism to spawn a cross-over baby organism, merging properties of the selected and right-clicked organism.
+- Press `<delete>` to kill selected agent.
+- Press `<backspace>` to remove the selected agent as well as its entire family.
+
+
+#### Food
+- Left-click food grid to grow food at mouse position.
+- Right-click food grid to remove food at mouse position.
